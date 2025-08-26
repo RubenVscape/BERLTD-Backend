@@ -28,8 +28,11 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
         message: err.message
     })
 })
-app.listen(port, () => {
-    console.log("[Server] running at http://localhost:" + port)
-})
+
+if (process.env.NODE_ENV !== 'production'){
+    app.listen(port, () => {
+        console.log("[Server] running at:" + port)
+    })
+}
 
 export default app;
