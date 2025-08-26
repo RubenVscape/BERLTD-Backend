@@ -2,8 +2,8 @@ import 'reflect-metadata';
 import { createExpressServer, RoutingControllersOptions } from 'routing-controllers';
 import { connectDB } from './config/db';
 import { authorizationChecker, currentUserChecker } from './auth/authorizationChecker';
-import { VercelRequest, VercelResponse } from '@vercel/node';
-
+import serverlessExpress from '@vendia/serverless-express';
+import express from 'express';
 require("dotenv").config();
 
 const routingControllersOptions: RoutingControllersOptions = {
@@ -21,14 +21,12 @@ connectDB();
 
 const app = createExpressServer(routingControllersOptions);
 
-// local dev server
+// Local dev only
 if (process.env.NODE_ENV !== 'production') {
   app.listen(3001, () => {
     console.log("[Server] running at http://localhost:3001");
   });
 }
 
-// ✅ for vercel: export handler
-export default function handler(req: VercelRequest, res: VercelResponse) {
-  return app(req, res);
-}
+// ✅ Adapt Express for Vercel
+export default serverlessExpress({ app });
