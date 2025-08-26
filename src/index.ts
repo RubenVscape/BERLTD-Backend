@@ -1,8 +1,10 @@
 import 'reflect-metadata';
-require("dotenv").config();
 import { createExpressServer, RoutingControllersOptions } from 'routing-controllers';
 import { connectDB } from './config/db';
 import { authorizationChecker, currentUserChecker } from './auth/authorizationChecker';
+import { VercelRequest, VercelResponse } from '@vercel/node';
+
+require("dotenv").config();
 
 const routingControllersOptions: RoutingControllersOptions = {
   routePrefix: "/api",
@@ -18,12 +20,15 @@ const routingControllersOptions: RoutingControllersOptions = {
 connectDB();
 
 const app = createExpressServer(routingControllersOptions);
-if (process.env.NODE_ENV !== 'production'){
-    app.listen(3001, () => {
-        console.log("[Server] running at:" + 3000)
-    })
+
+// local dev server
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(3001, () => {
+    console.log("[Server] running at http://localhost:3001");
+  });
 }
 
-
-// ✅ this is the key: make it a serverless handler
-export default app;
+// ✅ for vercel: export handler
+export default function handler(req: VercelRequest, res: VercelResponse) {
+  return app(req, res);
+}
