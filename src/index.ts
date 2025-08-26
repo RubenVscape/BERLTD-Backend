@@ -35,7 +35,9 @@ if (process.env.NODE_ENV !== 'production'){
     })
 }
 else {
-    console.log('server running ok')
+   app.listen(port , () => {
+    console.log('server listeing now at'+port);
+   });
 }
 
 export default app;
