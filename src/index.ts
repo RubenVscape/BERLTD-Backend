@@ -1,43 +1,29 @@
-import 'reflect-metadata'
-
-require("dotenv").config()
+import 'reflect-metadata';
+require("dotenv").config();
 import { createExpressServer, RoutingControllersOptions } from 'routing-controllers';
 import { connectDB } from './config/db';
 import { authorizationChecker, currentUserChecker } from './auth/authorizationChecker';
-import express from 'express';
 
-const port = process.env.PORT || "3002";
+const routingControllersOptions: RoutingControllersOptions = {
+  routePrefix: "/api",
+  controllers: [`${__dirname}/controller/*.controller.*`],
+  validation: true,
+  classTransformer: true,
+  cors: true,
+  defaultErrorHandler: false,
+  authorizationChecker,
+  currentUserChecker
+};
 
- connectDB();
-
- const routingControllersOptions: RoutingControllersOptions = {
-    routePrefix: "/api",
-    controllers: [`${__dirname}/controller/*.controller.*`],
-    validation:true, 
-    classTransformer: true,
-    cors: true,
-    defaultErrorHandler:false,
-    authorizationChecker,
-    currentUserChecker
- };
+connectDB();
 
 const app = createExpressServer(routingControllersOptions);
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    res.status(err.httpCode || 500).json({
-        name: err.name,
-        message: err.message
-    })
-})
-
 if (process.env.NODE_ENV !== 'production'){
-    app.listen(port, () => {
-        console.log("[Server] running at:" + port)
+    app.listen(3001, () => {
+        console.log("[Server] running at:" + 3000)
     })
 }
-else {
-   app.listen(port , () => {
-    console.log('server listeing now at'+port);
-   });
-}
 
+
+// ✅ this is the key: make it a serverless handler
 export default app;
