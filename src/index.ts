@@ -1,29 +1,10 @@
-import 'reflect-metadata';
-import { createExpressServer, RoutingControllersOptions } from 'routing-controllers';
-import { connectDB } from './config/db';
-import { authorizationChecker, currentUserChecker } from './auth/authorizationChecker';
-require("dotenv").config();
+import express from 'express';
+import app from './main';
 
-const routingControllersOptions: RoutingControllersOptions = {
-  routePrefix: "/api",
-  controllers: [`${__dirname}/controller/*.controller.*`],
-  validation: true,
-  classTransformer: true,
-  cors: true,
-  defaultErrorHandler: false,
-  authorizationChecker,
-  currentUserChecker
-};
 
-connectDB();
+const server = express();
 
-const app = createExpressServer(routingControllersOptions);
+server.use(app);
 
-// ✅ only for local dev
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(3001, () => {
-    console.log("[Server] running at http://localhost:3001");
-  });
-}
 
-export default app; // ✅ This is what Vercel runs
+export default app;

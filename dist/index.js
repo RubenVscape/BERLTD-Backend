@@ -1,26 +1,10 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-require("reflect-metadata");
-const routing_controllers_1 = require("routing-controllers");
-const db_1 = require("./config/db");
-const authorizationChecker_1 = require("./auth/authorizationChecker");
-require("dotenv").config();
-const routingControllersOptions = {
-    routePrefix: "/api",
-    controllers: [`${__dirname}/controller/*.controller.*`],
-    validation: true,
-    classTransformer: true,
-    cors: true,
-    defaultErrorHandler: false,
-    authorizationChecker: authorizationChecker_1.authorizationChecker,
-    currentUserChecker: authorizationChecker_1.currentUserChecker
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-(0, db_1.connectDB)();
-const app = (0, routing_controllers_1.createExpressServer)(routingControllersOptions);
-// Local dev only
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(3001, () => {
-        console.log("[Server] running at http://localhost:3001");
-    });
-}
-exports.default = app;
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const main_1 = __importDefault(require("./main"));
+const server = (0, express_1.default)();
+server.use(main_1.default);
+exports.default = main_1.default;
