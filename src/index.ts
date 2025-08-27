@@ -6,7 +6,7 @@ require("dotenv").config();
 
 connectDB();
 const controllersPath = `${__dirname}/controller/*.{js,ts}`;
-const localHtlmPath = `${__dirname}/public/index.html`
+const localHtmlPath = `${__dirname}/public/index.html`
 
 console.log(controllersPath);
 const routingControllersOptions: RoutingControllersOptions = {
@@ -26,7 +26,7 @@ const app = createExpressServer(routingControllersOptions);
 const PORT = process.env.PORT || 3001;
 
 app.get("/", (req:any, res:any) => {
-  res.sendFile(localHtlmPath);
+  res.sendFile(localHtmlPath);
 });
 
 app.listen(PORT, () => {
