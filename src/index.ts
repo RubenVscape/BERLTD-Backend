@@ -12,6 +12,7 @@ const controllersPath =
     ? path.join(__dirname, "controller/*.js")
     : path.join(__dirname, "controller/*.ts");
 
+  console.log(controllersPath);
 const routingControllersOptions: RoutingControllersOptions = {
   routePrefix: "/api",
   controllers: [controllersPath],
@@ -30,6 +31,8 @@ if (process.env.NODE_ENV !== 'production') {
   app.listen(3001, () => {
     console.log("[Server] running at http://localhost:3001");
   });
+} else {
+  console.log('app running production server')
 }
 
 export default app;
