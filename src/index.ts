@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { createExpressServer, RoutingControllersOptions } from 'routing-controllers';
 import { connectDB } from './config/db';
 import { authorizationChecker, currentUserChecker } from './auth/authorizationChecker';
+require("dotenv").config();
 
 connectDB();
 const controllersPath =
@@ -29,7 +30,6 @@ if (process.env.NODE_ENV !== 'production') {
     console.log("[Server] running at http://localhost:3001");
   });
 } else {
-  require("dotenv").config();
   console.log(`[server] running in production`)
 }
 
