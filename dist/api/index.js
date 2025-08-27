@@ -4,5 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __importDefault(require("../index"));
-const serverless_express_1 = __importDefault(require("@vendia/serverless-express"));
-exports.default = (0, serverless_express_1.default)({ app: index_1.default });
+// Vercel expects a function with (req, res)
+exports.default = (req, res) => {
+    (0, index_1.default)(req, res);
+};

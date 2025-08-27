@@ -1,4 +1,7 @@
 import app from "../index";
-import serverlessExpress from "@vendia/serverless-express";
+import { VercelRequest, VercelResponse } from '@vercel/node';
 
-export default serverlessExpress({ app });
+// Vercel expects a function with (req, res)
+export default (req: VercelRequest, res: VercelResponse) => {
+  app(req, res);
+};
