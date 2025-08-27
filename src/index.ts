@@ -25,7 +25,7 @@ const routingControllersOptions: RoutingControllersOptions = {
 
 const app = createExpressServer(routingControllersOptions);
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.ISLOCAL === 'true') {
   app.listen(3001, () => {
     console.log("[Server] running at http://localhost:3001");
   });
