@@ -17,7 +17,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^22.18.0",
+    "@types/node": "^22.0.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.2"
