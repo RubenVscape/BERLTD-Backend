@@ -2,11 +2,19 @@ import 'reflect-metadata';
 import { createExpressServer, RoutingControllersOptions } from 'routing-controllers';
 import { connectDB } from './config/db';
 import { authorizationChecker, currentUserChecker } from './auth/authorizationChecker';
+import path from 'path';
 require("dotenv").config();
 
+
+const controllersPath =
+  process.env.NODE_ENV === "production"
+    ? path.join(__dirname, "controller/*.js")
+    : path.join(__dirname, "controller/*.ts");
+
+console.log(controllersPath);
 const routingControllersOptions: RoutingControllersOptions = {
   routePrefix: "/api",
-  controllers: [`${__dirname}/controller/*.controller.*`],
+  controllers: [`${controllersPath}/controller/*.controller.*`],
   validation: true,
   classTransformer: true,
   cors: true,
