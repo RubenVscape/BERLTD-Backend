@@ -9,8 +9,8 @@ require("dotenv").config();
 connectDB();
 const controllersPath =
   process.env.NODE_ENV === "production"
-    ? path.join(__dirname, "controller/*.js")
-    : path.join(__dirname, "controller/*.ts");
+    ? `${__dirname}/controller/*.js`
+    : `${__dirname}/controller/*.ts`;
 
   console.log(controllersPath);
 const routingControllersOptions: RoutingControllersOptions = {

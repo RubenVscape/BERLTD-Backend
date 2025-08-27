@@ -1,2 +1,4 @@
-import app from "..";
-export default app;
+import app from "../index";
+import serverlessExpress from "@vendia/serverless-express";
+
+export default serverlessExpress({ app });
