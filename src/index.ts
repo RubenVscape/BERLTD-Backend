@@ -19,11 +19,11 @@ connectDB();
 
 const app = createExpressServer(routingControllersOptions);
 
-// Local dev only
+// ✅ only for local dev
 if (process.env.NODE_ENV !== 'production') {
   app.listen(3001, () => {
     console.log("[Server] running at http://localhost:3001");
   });
 }
 
-export default app ;
+export default app; // ✅ This is what Vercel runs
