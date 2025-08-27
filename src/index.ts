@@ -3,7 +3,6 @@ import { createExpressServer, RoutingControllersOptions } from 'routing-controll
 import { connectDB } from './config/db';
 import { authorizationChecker, currentUserChecker } from './auth/authorizationChecker';
 import serverlessExpress from '@vendia/serverless-express';
-import express from 'express';
 require("dotenv").config();
 
 const routingControllersOptions: RoutingControllersOptions = {
@@ -28,5 +27,4 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-// ✅ Adapt Express for Vercel
 export default serverlessExpress({ app });
