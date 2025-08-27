@@ -6,15 +6,15 @@ import path from 'path';
 require("dotenv").config();
 
 
+connectDB();
 const controllersPath =
   process.env.NODE_ENV === "production"
     ? path.join(__dirname, "controller/*.js")
     : path.join(__dirname, "controller/*.ts");
 
-console.log(controllersPath);
 const routingControllersOptions: RoutingControllersOptions = {
   routePrefix: "/api",
-  controllers: [`${controllersPath}/controller/*.controller.*`],
+  controllers: [controllersPath],
   validation: true,
   classTransformer: true,
   cors: true,
@@ -23,7 +23,6 @@ const routingControllersOptions: RoutingControllersOptions = {
   currentUserChecker
 };
 
-connectDB();
 
 const app = createExpressServer(routingControllersOptions);
 
