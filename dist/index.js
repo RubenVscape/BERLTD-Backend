@@ -6,9 +6,8 @@ const db_1 = require("./config/db");
 const authorizationChecker_1 = require("./auth/authorizationChecker");
 require("dotenv").config();
 (0, db_1.connectDB)();
-const controllersPath = process.env.NODE_ENV === "production"
-    ? `${__dirname}/controller/*.js`
-    : `${__dirname}/controller/*.ts`;
+const controllersPath = `${__dirname}/controller/*.{js,ts}`;
+const localHtlmPath = `${__dirname}/public/index.html`;
 console.log(controllersPath);
 const routingControllersOptions = {
     routePrefix: "/api",
@@ -21,12 +20,11 @@ const routingControllersOptions = {
     currentUserChecker: authorizationChecker_1.currentUserChecker
 };
 const app = (0, routing_controllers_1.createExpressServer)(routingControllersOptions);
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(3001, () => {
-        console.log("[Server] running at http://localhost:3001");
-    });
-}
-else {
-    console.log(`[server] running in production`);
-}
+const PORT = process.env.PORT || 3001;
+app.get("/", (req, res) => {
+    res.sendFile(localHtlmPath);
+});
+app.listen(PORT, () => {
+    console.log(`[Server] running at http://localhost:${PORT}`);
+});
 exports.default = app;
