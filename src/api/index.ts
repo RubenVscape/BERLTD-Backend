@@ -1,4 +1,6 @@
-import { default as app } from "../index";
-import serverlessExpress from "@vendia/serverless-express";
+import app from "../index";
+import serverless from "@vendia/serverless-express";
 
-export default serverlessExpress({ app });
+// Vercel needs a function handler, not just an express app
+export default serverless({ app });
+
