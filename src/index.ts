@@ -5,10 +5,7 @@ import { authorizationChecker, currentUserChecker } from './auth/authorizationCh
 require("dotenv").config();
 
 connectDB();
-const controllersPath =
-process.env.NODE_ENV === "production"
-? `${__dirname}/controller/*.js`
-: `${__dirname}/controller/*.ts`;
+const controllersPath = `${__dirname}/controller/*.{js,ts}`;
 
 console.log(controllersPath);
 const routingControllersOptions: RoutingControllersOptions = {
