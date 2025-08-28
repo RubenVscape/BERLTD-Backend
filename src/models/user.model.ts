@@ -11,7 +11,8 @@ export interface IUser extends Document {
     active: boolean;
     authenticated: boolean;
     userId: string;
-    createdAt: Date
+    createdAt: Date;
+    responsibleLocations?: string[]
 }
 
 const UserSchema = new Schema<IUser> (
@@ -26,7 +27,8 @@ const UserSchema = new Schema<IUser> (
         authenticated: { type: Boolean,required: false, default: false},
         userId: { type: String, require: false },
         createdAt: { type: Date, default: Date.now},
-        divisionType: { type: Number, required:false}
+        divisionType: { type: Number, required:false},
+        responsibleLocations: { type: [String], required: false}
     },
     { timestamps: true}
 );

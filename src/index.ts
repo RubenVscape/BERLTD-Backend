@@ -29,6 +29,18 @@ app.get("/", (req:any, res:any) => {
   res.sendFile(localHtmlPath);
 });
 
+app.use((error:any, req:any, res:any, next:any) => {
+  if(error.httpCode) {
+    return res.status(error.httpCode).json({
+      name:error.name,
+      message: error.message,
+    })
+  }
+  return res.status(500).json({
+    name:'InternalServerError',
+    message: error.message || 'Unexpected Error'
+  })
+})
 app.listen(PORT, () => {
   console.log(`[Server] running at http://localhost:${PORT}`);
 });

@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Date} from "mongoose";
-
+import {validate as isUUID} from 'uuid';
 export interface ILocation extends Document { 
     locationName: string;
     locationId: string;
@@ -7,7 +7,7 @@ export interface ILocation extends Document {
     active: boolean;
     createdAt: Date;
     createdBy: string;
-    responsible: string
+    responsible: string;
 }
 
 
@@ -19,7 +19,10 @@ const LocationSchema = new Schema<ILocation> (
         active: { type: Boolean, required: false, default: true},
         createdAt: { type: Date, required: false, default:  Date.now},
         createdBy: {type: String, required: true },
-        responsible: {type: String, required: true}
+        responsible: {type: String, required: true, validate: {
+            validator:(v:string) => isUUID(v),
+            message: (props:any) => 'Invalid type of Id'
+        }}
     },
     {
         timestamps: true
