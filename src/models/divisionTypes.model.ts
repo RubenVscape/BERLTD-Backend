@@ -1,6 +1,5 @@
-import { IS_UUID } from "class-validator";
 import { randomUUID, UUID } from "crypto";
-import mongoose, {Schema, Document, Date, mongo} from "mongoose";
+import mongoose, {Schema, Document, Date} from "mongoose";
 
 export interface IDivision extends Document {
     divisionId: UUID,
