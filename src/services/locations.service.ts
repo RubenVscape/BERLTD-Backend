@@ -66,13 +66,93 @@ export class LocationService {
     async getLocations(skip: number = 0, limit:number=10) {
         const locations = LocationModel.aggregate([
             {
+                $lookup:{
+                    from:'users',
+                    localField:'responsible',
+                    foreignField:'userId',
+                    as:'userInfo'
+                }
+            }, 
+            {
+                $lookup: {
+                    from:'users',
+                    localField:'createdBy',
+                    foreignField:'userId',
+                    as:'userInfoCreatedBy'
+                }
+            },
+            {
                 $project: {
-                    ...locationProjection
+                    ...locationProjection,
+                    responsible: {
+                        $cond :[
+                            { $gt: [{$size: '$userInfo'},0]},
+                           {$arrayElemAt: ['$userInfo.fullname',0]},
+                            'Unknown User'
+                        ]
+                    },
+                    createdBy:{
+                        $cond: [
+                            {$gt:[{$size:'$userInfoCreatedBy'},0]},
+                            {$arrayElemAt: ["$userInfoCreatedBy.fullname",0]},
+                            'Unknown User'
+                        ]
+                    }
                 }
             },
             { $skip: skip},
             {$limit: limit}
         ]);
         return locations
+    }
+    async getLocationById(locationId: UUID) {
+        const locations = LocationModel.aggregate([
+            {
+                $match: { locationId}
+            },
+            {
+                $lookup:{
+                    from:'users',
+                    localField:'responsible',
+                    foreignField:'userId',
+                    as:'userInfo'
+                }
+            }, 
+            {
+                $lookup: {
+                    from:'users',
+                    localField:'createdBy',
+                    foreignField:'userId',
+                    as:'userInfoCreatedBy'
+                }
+            },
+            {
+                $project: {
+                    ...locationProjection,
+                    responsible: {
+                        $cond :[
+                            { $gt: [{$size: '$userInfo'},0]},
+                           {$arrayElemAt: ['$userInfo.fullname',0]},
+                            'Unknown User'
+                        ]
+                    },
+                    createdBy:{
+                        $cond: [
+                            {$gt:[{$size:'$userInfoCreatedBy'},0]},
+                            {$arrayElemAt: ["$userInfoCreatedBy.fullname",0]},
+                            'Unknown User'
+                        ]
+                    }
+                }
+            }
+        ]);
+        return locations
+    }
+    async deleteLocationById(locationId:UUID) {
+        const req = await LocationModel.deleteOne({locationId});
+        if (req.deletedCount === 0) {
+            return false;
+        }
+        return true;
     }
 }

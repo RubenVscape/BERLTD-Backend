@@ -196,5 +196,25 @@ export class UserService {
     async addLocationToUser(userId: UUID, location: string) {
         return await UserModel.updateOne({ userId }, { $push: { responsibleLocations:location } })
     }
+    async checkIfUserHasLocation(locationId:String) {
+        return await UserModel.findOne({location:locationId}, {_id:0}).lean();
+    }
+    async removeLocationToUserById(locationId:UUID) {
+        const removeLocationFromUser = await UserModel.updateMany({location: locationId}, {
+            $pull: {
+                location: locationId
+            }
+        })
+        if(removeLocationFromUser.modifiedCount === 0) {
+            return new Error('There was an error please try later')
+        }
+        const removeResPonsible = await UserModel.updateOne({responsibleLocations: locationId}, {
+                $pull:{ responsibleLocations: locationId}
+        })
+        if(removeResPonsible.modifiedCount === 0) {
+            return new Error('There was an error removing the responsible, please try again')
+        }
+        return true;
+    }
 }
 

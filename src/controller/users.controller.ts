@@ -4,6 +4,16 @@ import { IUser } from '../models/user.model';
 import { Response } from 'express';
 import { UUID } from 'crypto';
 
+
+// api  list ROOT /users
+
+// create user POST /create
+// get users GET /getUsers
+// get user by id GET /getUserById/:id 
+// update user by ID PATCH /updateUserById 
+// delete user by id DELETE /deleteUserById/:userId
+
+
 const userService = new UserService();
 const invalidKeysForUser = [
     "_id",
@@ -16,17 +26,18 @@ const invalidKeysForUser = [
     'divisionType',
     'responsibleLocations'
 ];
-
+const authorizedUsers = ['global', 'manager'];
 @JsonController("/users")
 export default class UserController {
     @HttpCode(201)
     @Post("/create")
+    @Authorized(authorizedUsers)
     async createUser(@Body() body: IUser) {
         const user = await userService.createUser(body);
         return { data: user.userId, message: 'User created' }
     }
     @HttpCode(200)
-    @Authorized(['global', 'manager'])
+    @Authorized(authorizedUsers)
     @Get("/getUsers")
     async getUsers(@QueryParam('page') page: number, @QueryParam('limit') limit: number, @Res() res: Response) {
         try {
@@ -39,7 +50,7 @@ export default class UserController {
         }
     }
 
-    @Authorized(['global', ' manager'])
+    @Authorized(authorizedUsers)
     @HttpCode(200)
     @Get("/getUserById/:id")
     async getUserById(@Res() res: Response, @Param('id') id: UUID) {
@@ -58,7 +69,7 @@ export default class UserController {
         }
     }
 
-    @Authorized(['manager', 'global'])
+    @Authorized(authorizedUsers)
     @HttpCode(200)
     @Patch('/updateUserById/:userId')
     async updateUserById(@Res() res: Response, @Param('userId') userId: UUID, @Body() body: IUser) {
