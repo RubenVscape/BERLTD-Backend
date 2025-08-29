@@ -18,7 +18,8 @@ const UserProjection = {
     authenticated: 1,
     userId: 1,
     createdAt: 1,
-    responsibleLocations: 1
+    responsibleLocations: 1,
+    status: 1
 };
 
 export class UserService {
@@ -31,14 +32,21 @@ export class UserService {
                 throw new Error('The division does not exists')
             }
         }
-        const hashPassword = await bcrypt.hash(data.password, 10);
-        const newUser = new UserModel({
+        if(data.password) {
+            const hashPassword = await bcrypt.hash(data.password, 10);
+            const newUser = new UserModel({
+                ...data,
+                password: hashPassword,
+                userId: randomUUID()
+            });
+            return await newUser.save()
+        }
+        const user = new UserModel({
             ...data,
-            password: hashPassword,
             userId: randomUUID()
-        });
+        })
 
-        return await newUser.save();
+        return await user.save();
     }
 
     async getAllUsers(skip: number = 0, limit: number = 10) {
