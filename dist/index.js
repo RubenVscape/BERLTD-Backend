@@ -7,7 +7,7 @@ const authorizationChecker_1 = require("./auth/authorizationChecker");
 require("dotenv").config();
 (0, db_1.connectDB)();
 const controllersPath = `${__dirname}/controller/*.{js,ts}`;
-const localHtlmPath = `${__dirname}/public/index.html`;
+const localHtmlPath = `${__dirname}/public/index.html`;
 console.log(controllersPath);
 const routingControllersOptions = {
     routePrefix: "/api",
@@ -22,7 +22,19 @@ const routingControllersOptions = {
 const app = (0, routing_controllers_1.createExpressServer)(routingControllersOptions);
 const PORT = process.env.PORT || 3001;
 app.get("/", (req, res) => {
-    res.sendFile(localHtlmPath);
+    res.sendFile(localHtmlPath);
+});
+app.use((error, req, res, next) => {
+    if (error.httpCode) {
+        return res.status(error.httpCode).json({
+            name: error.name,
+            message: error.message,
+        });
+    }
+    return res.status(500).json({
+        name: 'InternalServerError',
+        message: error.message || 'Unexpected Error'
+    });
 });
 app.listen(PORT, () => {
     console.log(`[Server] running at http://localhost:${PORT}`);

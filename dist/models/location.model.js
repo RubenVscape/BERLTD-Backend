@@ -35,6 +35,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocationModel = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
+const uuid_1 = require("uuid");
 const LocationSchema = new mongoose_1.Schema({
     locationName: { type: String, required: true },
     locationId: { type: String, required: true },
@@ -42,7 +43,10 @@ const LocationSchema = new mongoose_1.Schema({
     active: { type: Boolean, required: false, default: true },
     createdAt: { type: Date, required: false, default: Date.now },
     createdBy: { type: String, required: true },
-    responsible: { type: String, required: true }
+    responsible: { type: String, required: true, validate: {
+            validator: (v) => (0, uuid_1.validate)(v),
+            message: (props) => 'Invalid type of Id'
+        } }
 }, {
     timestamps: true
 });

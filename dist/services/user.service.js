@@ -19,7 +19,9 @@ const UserProjection = {
     active: 1,
     authenticated: 1,
     userId: 1,
-    createdAt: 1
+    createdAt: 1,
+    responsibleLocations: 1,
+    status: 1
 };
 class UserService {
     async createUser(data) {
@@ -32,13 +34,20 @@ class UserService {
                 throw new Error('The division does not exists');
             }
         }
-        const hashPassword = await bcryptjs_1.default.hash(data.password, 10);
-        const newUser = new user_model_1.UserModel({
+        if (data.password) {
+            const hashPassword = await bcryptjs_1.default.hash(data.password, 10);
+            const newUser = new user_model_1.UserModel({
+                ...data,
+                password: hashPassword,
+                userId: (0, crypto_1.randomUUID)()
+            });
+            return await newUser.save();
+        }
+        const user = new user_model_1.UserModel({
             ...data,
-            password: hashPassword,
             userId: (0, crypto_1.randomUUID)()
         });
-        return await newUser.save();
+        return await user.save();
     }
     async getAllUsers(skip = 0, limit = 10) {
         //const users = await UserModel.find({}, {"_id":0, "password":0}).skip(skip).limit(limit).lean();
@@ -52,6 +61,22 @@ class UserService {
                 }
             },
             {
+                $lookup: {
+                    from: 'locations',
+                    localField: 'location',
+                    foreignField: 'locationId',
+                    as: 'locationInfo'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'locations',
+                    localField: 'responsibleLocations',
+                    foreignField: 'locationId',
+                    as: 'responsibleLocationsInfo'
+                }
+            },
+            {
                 $unwind: {
                     path: "$divisionInfo",
                     preserveNullAndEmptyArrays: true
@@ -60,13 +85,140 @@ class UserService {
             {
                 $project: {
                     ...UserProjection,
-                    divisionType: "$divisionInfo.label"
+                    divisionType: {
+                        $cond: [
+                            {
+                                $ifNull: ["$divisionInfo", false]
+                            },
+                            "$divisionInfo.label",
+                            "$$REMOVE"
+                        ]
+                    },
+                    location: {
+                        $cond: [
+                            { $in: ['all', '$location'] },
+                            'all',
+                            {
+                                $map: {
+                                    input: '$locationInfo',
+                                    as: 'loc',
+                                    in: '$$loc.locationName'
+                                }
+                            }
+                        ]
+                    },
+                    responsibleLocations: {
+                        $cond: [
+                            { $gt: [{ $size: { $ifNull: ['$responsibleLocationsInfo', []] } }, 0] },
+                            {
+                                $map: {
+                                    input: '$responsibleLocationsInfo',
+                                    as: 'loc',
+                                    in: '$$loc.locationName'
+                                }
+                            },
+                            []
+                        ]
+                    }
                 }
             },
             { $skip: skip },
             { $limit: limit }
         ]);
         return users;
+    }
+    async getUserById(id) {
+        const user = await user_model_1.UserModel.aggregate([
+            {
+                $lookup: {
+                    from: 'divisions',
+                    localField: 'divisionType',
+                    foreignField: 'divisionType',
+                    as: 'divisionInfo'
+                }
+            }, {
+                $lookup: {
+                    from: 'locations',
+                    localField: 'location',
+                    foreignField: 'locationId',
+                    as: 'locationInfo'
+                }
+            },
+            {
+                $match: {
+                    userId: id
+                }
+            }, {
+                $unwind: {
+                    path: '$divisionInfo',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $project: {
+                    ...UserProjection,
+                    divisionType: {
+                        $cond: [
+                            {
+                                $ifNull: ['$divisionInfo', false]
+                            },
+                            "$divisionInfo.label",
+                            "$$REMOVE"
+                        ]
+                    },
+                    location: {
+                        $map: {
+                            input: '$locationInfo',
+                            as: 'loc',
+                            in: {
+                                locationId: '$$loc.locationId',
+                                name: '$$loc.locationName'
+                            }
+                        }
+                    }
+                }
+            }
+        ]);
+        return user;
+    }
+    async updateUserById(userId, data) {
+        const updateUser = await user_model_1.UserModel.updateOne({ userId }, {
+            $set: data
+        });
+        if (!updateUser.acknowledged) {
+            return null;
+        }
+        return userId;
+    }
+    async deleteUserById(userId) {
+        const updateUser = await user_model_1.UserModel.deleteOne({ userId });
+        if (!updateUser.acknowledged) {
+            return null;
+        }
+        return userId;
+    }
+    async addLocationToUser(userId, location) {
+        return await user_model_1.UserModel.updateOne({ userId }, { $push: { responsibleLocations: location } });
+    }
+    async checkIfUserHasLocation(locationId) {
+        return await user_model_1.UserModel.findOne({ location: locationId }, { _id: 0 }).lean();
+    }
+    async removeLocationToUserById(locationId) {
+        const removeLocationFromUser = await user_model_1.UserModel.updateMany({ location: locationId }, {
+            $pull: {
+                location: locationId
+            }
+        });
+        if (removeLocationFromUser.modifiedCount === 0) {
+            return new Error('There was an error please try later');
+        }
+        const removeResPonsible = await user_model_1.UserModel.updateOne({ responsibleLocations: locationId }, {
+            $pull: { responsibleLocations: locationId }
+        });
+        if (removeResPonsible.modifiedCount === 0) {
+            return new Error('There was an error removing the responsible, please try again');
+        }
+        return true;
     }
 }
 exports.UserService = UserService;

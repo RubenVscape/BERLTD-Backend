@@ -33,21 +33,19 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserModel = void 0;
+exports.EmployeeRequisitionFormModel = void 0;
+const crypto_1 = require("crypto");
 const mongoose_1 = __importStar(require("mongoose"));
-const UserSchema = new mongoose_1.Schema({
-    fullname: { type: String, required: true },
-    email: { type: String, required: true },
-    phone: { type: Number, required: true },
-    userType: { type: String, required: true },
-    password: { type: String, required: false, minlength: 4 },
-    location: { type: [String], required: true },
-    active: { type: Boolean, required: false, default: false },
-    authenticated: { type: Boolean, required: false, default: false },
-    userId: { type: String, require: false },
+const EmployeeRequisitionFormSchema = new mongoose_1.Schema({
+    formId: { type: String, default: crypto_1.randomUUID },
     createdAt: { type: Date, default: Date.now },
-    divisionType: { type: Number, required: false },
-    responsibleLocations: { type: [String], required: false },
-    status: { type: String, required: true }
-}, { timestamps: true });
-exports.UserModel = mongoose_1.default.model("users", UserSchema);
+    createdBy: { type: String, required: true },
+    reportTo: { type: String, required: true },
+    jobNumber: { type: String, required: true },
+    jobLocation: { type: String, required: true },
+    projectedLength: { type: mongoose_1.Schema.Types.Mixed, required: true },
+    updatedBy: { type: String, required: false },
+    updatedAt: { type: Date, required: false },
+    applicants: { type: [String], require: false }
+}, { timestamps: true, strict: 'throw' });
+exports.EmployeeRequisitionFormModel = mongoose_1.default.model('employeeRequisitionForms', EmployeeRequisitionFormSchema);
