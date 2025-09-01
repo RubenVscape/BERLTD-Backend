@@ -2,7 +2,7 @@ import { UUID } from "crypto";
 import { EmployeeRequisitionFormModel, IEmployeeReqForm } from "../models/EmployeeReqForm.model";
 import { LocationModel } from "../models/location.model";
 import { UserModel } from "../models/user.model";
-import { ApplicantModel, IApplicantInterface } from "../models/applicants.model";
+import { ApplicantModel, IApplicantInterface } from "../models/applicant.model";
 import { da } from "@faker-js/faker/.";
 
 

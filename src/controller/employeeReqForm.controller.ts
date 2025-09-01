@@ -4,7 +4,7 @@ import { JwtPayload } from '../auth/authorizationChecker';
 import { IEmployeeReqForm } from '../models/EmployeeReqForm.model';
 import { Response } from 'express';
 import { UUID } from 'crypto';
-import { IApplicantInterface } from '../models/applicants.model';
+import { IApplicantInterface } from '../models/applicant.model';
 
 
 const authorizedUsers = ['global', 'manager', 'supervisor'];
