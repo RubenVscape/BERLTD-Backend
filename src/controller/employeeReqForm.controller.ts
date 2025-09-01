@@ -2,7 +2,7 @@ import { JsonController, Res, Post, Get, HttpCode, Authorized, Body, CurrentUser
 import { EmployeeReqFormService } from '../services/employeeReqForm.service';
 import { JwtPayload } from '../auth/authorizationChecker';
 import { IEmployeeReqForm } from '../models/EmployeeReqForm.model';
-import { application, Response } from 'express';
+import { Response } from 'express';
 import { UUID } from 'crypto';
 import { IApplicantModel } from '../models/applicants.model';
 

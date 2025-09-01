@@ -262,5 +262,4 @@ const ApplicantSchema = new Schema<IApplicantModel> (
       }
 );
 
-
 export const ApplicantModel = mongoose.model<IApplicantModel>('applicants', ApplicantSchema);
