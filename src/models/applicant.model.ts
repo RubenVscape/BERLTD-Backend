@@ -1,10 +1,11 @@
-import { randomUUID, UUID } from "crypto";
+import { randomUUID } from "crypto";
 import mongoose,  {Schema, Document, Date} from "mongoose";
 
 
 export interface IApplicantInterface extends Document {
-    applicantId:UUID,
-    formId:UUID,
+    divisionResponsible: string,
+    applicantId:string,
+    formId:string,
     updatedBy: string;
     updatedAt: Date;
     applicantName: string;

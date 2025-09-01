@@ -6,7 +6,8 @@ export interface IDivision extends Document {
     divisionType?: number, 
     label: string, 
     createdAt: Date,
-    createdBy: string
+    createdBy: string,
+    responsible:string
 }
 
 const DivisionSchema = new Schema<IDivision> (
@@ -15,7 +16,8 @@ const DivisionSchema = new Schema<IDivision> (
         divisionId: { type: String, required:false, default: randomUUID},
         divisionType: { type:Number, required: false},
         label : {type: String, required: true},
-        createdBy: { type: String, required:false }
+        createdBy: { type: String, required:false },
+        responsible: { type:String, required: true}
     },
     { timestamps: true}
 )
