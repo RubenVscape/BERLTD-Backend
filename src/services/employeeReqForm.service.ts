@@ -2,7 +2,7 @@ import { UUID } from "crypto";
 import { EmployeeRequisitionFormModel, IEmployeeReqForm } from "../models/EmployeeReqForm.model";
 import { LocationModel } from "../models/location.model";
 import { UserModel } from "../models/user.model";
-import { ApplicantModel, IApplicantModel } from "../models/applicants.model";
+import { ApplicantModel, IApplicantInterface } from "../models/applicants.model";
 import { da } from "@faker-js/faker/.";
 
 
@@ -183,7 +183,7 @@ export class EmployeeReqFormService {
         return updateApplicantInfo.modifiedCount === 0 ? false : true
     }
 
-    async addApplicant(data: IApplicantModel, createdBy: string, formId: string) {
+    async addApplicant(data: IApplicantInterface, createdBy: string, formId: string) {
         const formExists = await EmployeeRequisitionFormModel.findOne({ formId: formId });
         if (!formExists) throw new Error('Form does not exists');
 
@@ -203,7 +203,7 @@ export class EmployeeReqFormService {
         return data.applicantId;
     }
     
-    async updateApplicantInfo(applicantId:string, data:IApplicantModel, updatedBy:string) {
+    async updateApplicantInfo(applicantId:string, data:IApplicantInterface, updatedBy:string) {
         function flattenObject (obj:any, parentKey = '', res: Record<string,any> = {}): Record <string, any> {
             for(const [key, value] of Object.entries(obj)) {
                 const newKey = parentKey ?  `${parentKey}.${key}` : key;

@@ -4,7 +4,7 @@ import { JwtPayload } from '../auth/authorizationChecker';
 import { IEmployeeReqForm } from '../models/EmployeeReqForm.model';
 import { Response } from 'express';
 import { UUID } from 'crypto';
-import { IApplicantModel } from '../models/applicants.model';
+import { IApplicantInterface } from '../models/applicants.model';
 
 
 const authorizedUsers = ['global', 'manager', 'supervisor'];
@@ -111,7 +111,7 @@ export default class EmployeeReqForm {
     @HttpCode(200)
     @Authorized(authorizedUsers)
     @Post("/createApplicant/:formId")
-    async createApplicant(@Res() res: Response, @Body() data: IApplicantModel, @CurrentUser() user: JwtPayload, @Param('formId') formId: string) {
+    async createApplicant(@Res() res: Response, @Body() data: IApplicantInterface, @CurrentUser() user: JwtPayload, @Param('formId') formId: string) {
         try {
             const addApplicant = await employeeService.addApplicant(data, user.sub, formId);
             return { message: 'Applicant added correctly', state: true, data: addApplicant }
@@ -123,7 +123,7 @@ export default class EmployeeReqForm {
     @HttpCode(200)
     @Authorized(authorizedUsers)
     @Put("/updateApplicant/:applicantId")
-    async updateApplicant(@Param("applicantId") applicantId: string, @CurrentUser() user: JwtPayload, @Body() data: IApplicantModel, @Res() res: Response) {
+    async updateApplicant(@Param("applicantId") applicantId: string, @CurrentUser() user: JwtPayload, @Body() data: IApplicantInterface, @Res() res: Response) {
         try {
              await employeeService.updateApplicantInfo(applicantId, data, user.sub);
              return { message:'Application updated correctly', state:true, data:applicantId}

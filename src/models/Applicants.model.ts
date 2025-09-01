@@ -2,7 +2,7 @@ import { randomUUID, UUID } from "crypto";
 import mongoose,  {Schema, Document, Date} from "mongoose";
 
 
-export interface IApplicantModel extends Document {
+export interface IApplicantInterface extends Document {
     applicantId:UUID,
     formId:UUID,
     updatedBy: string;
@@ -173,7 +173,7 @@ export interface IApplicantModel extends Document {
 }
 
 
-const ApplicantSchema = new Schema<IApplicantModel> (
+const ApplicantSchema = new Schema<IApplicantInterface> (
       {
         formId: {type:String, required:true},
         updatedBy: {type: String, require:false},
@@ -262,4 +262,4 @@ const ApplicantSchema = new Schema<IApplicantModel> (
       }
 );
 
-export const ApplicantModel = mongoose.model<IApplicantModel>('applicants', ApplicantSchema);
+export const ApplicantModel = mongoose.model<IApplicantInterface>('applicants', ApplicantSchema);
