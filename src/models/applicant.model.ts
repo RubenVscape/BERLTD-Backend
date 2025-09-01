@@ -176,6 +176,7 @@ export interface IApplicantInterface extends Document {
 
 const ApplicantSchema = new Schema<IApplicantInterface> (
       {
+        divisionResponsible: { type:String, required:true},
         formId: {type:String, required:true},
         updatedBy: {type: String, require:false},
         updatedAt: {type: Date, require:false},
@@ -260,7 +261,8 @@ const ApplicantSchema = new Schema<IApplicantInterface> (
             side2: { location: { type: String } },
           },
         },
-      }
+      },
+      {strict: true}
 );
 
 export const ApplicantModel = mongoose.model<IApplicantInterface>('applicants', ApplicantSchema);

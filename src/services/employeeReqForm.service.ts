@@ -201,6 +201,9 @@ export class EmployeeReqFormService {
     });
     if (!formExists) throw new Error("Form does not exists");
 
+    const checkIfResponsibleExists = await UserModel.findOne({userId: data.divisionResponsible});
+    if (!checkIfResponsibleExists) throw new Error ('responsible does not exists')
+
     const addApplicant = new ApplicantModel({
       ...data,
       createdBy,
