@@ -39,7 +39,7 @@ export default class UserController {
     @HttpCode(200)
     @Authorized(authorizedUsers)
     @Get("/getUsers")
-    async getUsers(@QueryParam('page') page: number, @QueryParam('limit') limit: number, @Res() res: Response) {
+    async getUsers(@QueryParam('page') page: number = 1, @QueryParam('limit') limit: number = 10, @Res() res: Response) {
         try {
             const skip = (page - 1) * limit
             const data = await userService.getAllUsers(skip, limit);
