@@ -43,7 +43,7 @@ export default class UserController {
         try {
             const skip = (page - 1) * limit
             const data = await userService.getAllUsers(skip, limit);
-            return { data, total: data.length, message: 'Request ok' }
+            return { data, total: data.length, message: 'Request ok', state:true }
 
         } catch (error) {
             return res.status(500).json({ message: 'there was an error', error: error })
@@ -55,17 +55,18 @@ export default class UserController {
     @Get("/getUserById/:id")
     async getUserById(@Res() res: Response, @Param('id') id: UUID) {
         try {
-            const request = await userService.getUserById(id) as string[]
+            const request = await userService.getUserById(id) as string
             if (request.length === 0) {
                 return res.status(404).json({
                     message: 'User not found',
-                    data: []
+                    data: [],
+                    state:false
                 })
             }
-            return res.status(200).json({ data: request })
+            return res.status(200).json({ data: request, state:true })
 
         } catch (err) {
-            return res.status(500).json({ message: 'there was an error', error: err })
+            return res.status(500).json({ message: 'there was an error', error: err, state:false })
         }
     }
 

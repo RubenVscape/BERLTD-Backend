@@ -182,8 +182,8 @@ export class UserService {
                     }
                 }
             }
-        ]) as IUser | string[];
-        return user;
+        ]) as IUser[] | string[];
+        return user[0];
     }
     async updateUserById(userId: UUID, data: IUser) {
         const updateUser = await UserModel.updateOne({ userId }, {

@@ -1,5 +1,6 @@
 import { UUID } from "crypto";
 import {
+  Department,
   EmployeeRequisitionFormModel,
   IEmployeeReqForm,
 } from "../models/EmployeeReqForm.model";
@@ -283,7 +284,7 @@ export class EmployeeReqFormService {
     await EmployeeRequisitionFormModel.deleteOne({ formId });
   }
 
-  async handleApprovalByHr(
+  async handleDepartmentConsent(
     formId: string,
     issuedBy: string,
     data: object,
@@ -291,9 +292,15 @@ export class EmployeeReqFormService {
   ) {
     const getFormData = await EmployeeRequisitionFormModel.findOne({ formId });
     if (!getFormData) throw new Error("Form does not Exists");
-    const data2 = {
-      [department]: { ...data, issuedBy, issuedAt: new Date() },
-    };
+    if(department === 'rh'  || department === 'it') {
+      if (!getFormData.approvals?.dl?.state) throw new Error('Unable to complete consent, Divisional leader has not consent form.')
+      }
+    if(department === 'it') {
+      if (!getFormData.approvals?.rh?.state) throw new Error('Unable to complete consent, HR has not consent form.')
+    }
+    if(getFormData.status === 'Completed') {
+      throw new Error('This Form is complete, unable to handle consent')
+    }
     const updateForm = await EmployeeRequisitionFormModel.updateOne(
       { formId },
       {
@@ -308,5 +315,24 @@ export class EmployeeReqFormService {
     );
     if (updateForm.modifiedCount === 0)
       throw new Error("Unable to update Form");
+  }
+
+  async removeHandleDepartmentConsent(formId:string, issuedBy:string, department:Department, userType:string) {
+    console.log(userType)
+    const form = await EmployeeRequisitionFormModel.findOne({formId});
+
+    if (!form) throw new Error ('Form does not exists')
+    const deptApproval = form.approvals?.[department]; 
+    if(!deptApproval) throw new Error('department approval does not exists')
+
+    if (userType !== "global" || deptApproval.issuedBy !== issuedBy) {
+      throw new Error('You are not authorized to remove this approval')
+    }
+    
+      await EmployeeRequisitionFormModel.updateOne(
+        {formId },
+        {$unset: {[`approvals.${department}`]: ""}}
+      )
+    
   }
 }

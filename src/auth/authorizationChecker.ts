@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 export interface JwtPayload {
     sub: string;
     email?: string;
-    userTyp?: string;
+    userType?: string;
 }
 
 

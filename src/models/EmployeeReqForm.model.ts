@@ -8,7 +8,7 @@ export interface Approval {
     comment: string;
 }
 
-type Department = "hr" | "it" | "security";
+export type Department = "rh" | "it" | "security" | "dl";
 export type ApprovalsModel = {
  [key in Department]: Approval
 }
@@ -25,6 +25,7 @@ export interface IEmployeeReqForm extends Document {
   projectedLength: string | number;
   applicants: string[];
   approvals: ApprovalsModel;
+  status: string;
 }
 
 const ApprovalSchema = new Schema (
@@ -39,9 +40,10 @@ const ApprovalSchema = new Schema (
 
 const ApprovalsSchema = new Schema (
   {
-    hr: {type: ApprovalSchema, required: false},
+    rh: {type: ApprovalSchema, required: false},
     it: {type: ApprovalSchema, required: false},
-    security: {type: ApprovalSchema, required: false}
+    security: {type: ApprovalSchema, required: false},
+    dl: {type: ApprovalSchema, require:false}
   },
   { _id: false, strict: 'throw'}
 )
@@ -60,6 +62,7 @@ const EmployeeRequisitionFormSchema = new Schema<IEmployeeReqForm>(
     updatedAt: { type: Date, required: false },
     applicants: { type: [String], required: false },
     approvals: { type: ApprovalsSchema, required: false },
+    status: {type: String, required:false, default:'Incomplete'}
   },
   { timestamps: true, strict: "throw" }
 );

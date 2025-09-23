@@ -381,7 +381,7 @@ export default class EmployeeReqForm {
     @Param("department") department: string
   ) {
     try {
-      await employeeService.handleApprovalByHr(
+      await employeeService.handleDepartmentConsent(
         formId,
         user.sub,
         body,
@@ -391,6 +391,31 @@ export default class EmployeeReqForm {
     } catch (error: any) {
       return res.status(500).json({
         message: "Error while delete ERF form",
+        error: error.message,
+        state: false,
+      });
+    }
+  }
+  @HttpCode(200)
+  @Authorized(canHandleHrStatus)
+  @Patch("/removeHandleDepartmentConsent/:formId/:department")
+  async removeHandleDepartmentConsent(
+    @Res() res: Response,
+    @Param("formId") formId: string,
+    @CurrentUser() user: JwtPayload,
+    @Param("department") department: any
+  ) {
+    try {
+      await employeeService.removeHandleDepartmentConsent(
+        formId,
+        user.sub,
+        department,
+        user.userType as any
+      );
+      return { message: "Consent Revomed Correctly", state: true, data: formId };
+    } catch (error: any) {
+      return res.status(500).json({
+        message: "Error while handling consent for ERF form",
         error: error.message,
         state: false,
       });
