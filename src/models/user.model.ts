@@ -32,7 +32,7 @@ const UserSchema = new Schema<IUser> (
         divisionType: { type: String, required:false},
         department: { type: String, required:false},
         responsibleLocations: { type: [String], required: false},
-        status: { type: String, required: true}
+        status: { type: String, required: false}
     },
     { timestamps: true}
 );

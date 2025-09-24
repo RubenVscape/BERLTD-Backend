@@ -19,6 +19,8 @@ const UserProjection = {
     userId: 1,
     createdAt: 1,
     responsibleLocations: 1,
+    department:1,
+    division:1,
     status: 1
 };
 
@@ -26,12 +28,12 @@ export class UserService {
     async createUser(data: IUser) {
         const exist = await UserModel.findOne({ email: data.email });
         if (exist) throw new Error('User already registered');
-        if (data.divisionType) {
-            const checkIfDivisionExists = await DivisionModel.findOne({ divisionType: data.divisionType })
-            if (!checkIfDivisionExists) {
-                throw new Error('The division does not exists')
-            }
-        }
+        // if (data.divisionType) {
+        //     const checkIfDivisionExists = await DivisionModel.findOne({ divisionType: data.divisionType })
+        //     if (!checkIfDivisionExists) {
+        //         throw new Error('The division does not exists')
+        //     }
+        // }
         if(data.password) {
             const hashPassword = await bcrypt.hash(data.password, 10);
             const newUser = new UserModel({
@@ -161,15 +163,15 @@ export class UserService {
             {
                 $project: {
                     ...UserProjection,
-                    divisionType: {
-                        $cond: [
-                            {
-                                $ifNull: ['$divisionInfo', false]
-                            },
-                            "$divisionInfo.label",
-                            "$$REMOVE"
-                        ]
-                    },
+                    // divisionType: {
+                    //     $cond: [
+                    //         {
+                    //             $ifNull: ['$divisionInfo', false]
+                    //         },
+                    //         "$divisionInfo.label",
+                    //         "$$REMOVE"
+                    //     ]
+                    // },
                     location: {
                         $map: {
                             input: '$locationInfo',
@@ -179,7 +181,8 @@ export class UserService {
                                 name: '$$loc.locationName'
                             }
                         }
-                    }
+                    },
+                    locationId: '$location'
                 }
             }
         ]) as IUser[];

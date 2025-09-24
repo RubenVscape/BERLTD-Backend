@@ -48,9 +48,9 @@ export default class LocationController {
         try {
             const skip = (page - 1) * limit;
             const locations = await locationService.getLocations(skip, limit);
-            return { status: 'ok', data: locations, total: locations.length, page, limit}
+            return { state:true, data: locations, total: locations.length, page, limit}
         } catch (error) {
-            return res.status(500).json({ message: 'There was an error', error })
+            return res.status(500).json({ message: 'There was an error', error, state:false })
         }
     }
 

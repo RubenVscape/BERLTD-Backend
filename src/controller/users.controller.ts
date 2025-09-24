@@ -34,7 +34,7 @@ export default class UserController {
     @Authorized(authorizedUsers)
     async createUser(@Body() body: IUser) {
         const user = await userService.createUser(body);
-        return { data: user.userId, message: 'User created' }
+        return { data: user.userId, message: 'User created', state:true }
     }
     @HttpCode(200)
     @Authorized(authorizedUsers)
@@ -55,8 +55,8 @@ export default class UserController {
     @Get("/getUserById/:id")
     async getUserById(@Res() res: Response, @Param('id') id: UUID) {
         try {
-            const request = await userService.getUserById(id) as string
-            if (request.length === 0) {
+            const request = await userService.getUserById(id)
+            if (!request) {
                 return res.status(404).json({
                     message: 'User not found',
                     data: [],
