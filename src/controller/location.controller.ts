@@ -5,6 +5,7 @@ import { JwtPayload } from "../auth/authorizationChecker";
 import { UserService } from "../services/user.service";
 import { UUID } from "crypto";
 import { Response } from "express";
+import { IUser } from "../models/user.model";
 
 const locationService = new LocationService();
 const userService = new UserService();
@@ -31,8 +32,8 @@ export default class LocationController {
             ...body,
             createdBy: user.sub
         } as ILocation;
-        const checkIfResponsibleExists = await userService.getUserById(body.responsible as UUID) as string[];
-        if (checkIfResponsibleExists.length === 0) {
+        const checkIfResponsibleExists = await userService.getUserById(body.responsible) as IUser;
+        if (!checkIfResponsibleExists) {
             return res.status(400).json({ message: 'Responsible does not exist', data: [] })
         }
         const location = await locationService.createLocation(newLocation);
@@ -47,7 +48,7 @@ export default class LocationController {
         try {
             const skip = (page - 1) * limit;
             const locations = await locationService.getLocations(skip, limit);
-            return { status: 'ok', data: locations, total: locations.length }
+            return { status: 'ok', data: locations, total: locations.length, page, limit}
         } catch (error) {
             return res.status(500).json({ message: 'There was an error', error })
         }

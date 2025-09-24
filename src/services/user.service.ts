@@ -131,7 +131,7 @@ export class UserService {
     }
 
 
-    async getUserById(id: UUID) {
+    async getUserById(id: string) {
         const user = await UserModel.aggregate([
             {
                 $lookup: {
@@ -182,7 +182,7 @@ export class UserService {
                     }
                 }
             }
-        ]) as IUser[] | string[];
+        ]) as IUser[];
         return user[0];
     }
     async updateUserById(userId: UUID, data: IUser) {
