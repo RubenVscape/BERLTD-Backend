@@ -76,16 +76,17 @@ export default class UserController {
     async updateUserById(@Res() res: Response, @Param('userId') userId: UUID, @Body() body: IUser) {
         try {
             const keys = Object.keys(body);
+            console.log(keys);
             let hasInvalidFields = false;
             keys.forEach(k => {if (invalidKeysForUser.includes(k)) hasInvalidFields = true;  })
-            if (hasInvalidFields) {
+            if (!hasInvalidFields) {
                 return res.status(400).json({ message: 'invalid fields for update', data: [] })
             }
             const updateReq = await userService.updateUserById(userId, body);
             if (updateReq) {
-                return res.status(200).json({ message: 'User updated Correctly', data: userId })
+                return res.status(200).json({ message: 'User updated Correctly', data: userId, state: true})
             }
-            return res.status(400).json({ message: 'unable to update users', data: [] })
+            return res.status(400).json({ message: 'unable to update users', data: [], state:false })
 
         } catch (err) {
             return res.status(500).json({ message: 'there was an error', error: err })
@@ -98,9 +99,9 @@ export default class UserController {
         try {
             const updateReq = await userService.deleteUserById(userId);
             if (updateReq) {
-                return res.status(200).json({ message: 'User Delete Correctly', data: userId })
+                return res.status(200).json({ message: 'User Delete Correctly', data: userId, state:true })
             }
-            return res.status(400).json({ message: 'unable to delete user', data: [] })
+            return res.status(400).json({ message: 'unable to delete user', data: [], state: false })
 
         } catch (err) {
             return res.status(500).json({ message: 'there was an error', error: err })
