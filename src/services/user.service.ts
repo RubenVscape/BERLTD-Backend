@@ -51,8 +51,16 @@ export class UserService {
         return await user.save();
     }
 
-    async getAllUsers(skip: number = 0, limit: number = 10) {
+    async getAllUsers(skip: number = 0, limit: number = 10, filter:string) {
         //const users = await UserModel.find({}, {"_id":0, "password":0}).skip(skip).limit(limit).lean();
+        let match = {
+            $match: {}
+        }
+        if (filter) {
+           match =  {
+                $match:  { 'department' : filter }
+            }
+        }
         const users = await UserModel.aggregate([
             {
                 $lookup: {
@@ -127,7 +135,8 @@ export class UserService {
                 }
             },
             { $skip: skip },
-            { $limit: limit }
+            { $limit: limit },
+            match
         ])
         return users;
     }
