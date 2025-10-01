@@ -26,6 +26,7 @@ export interface IEmployeeReqForm extends Document {
   applicants: string[];
   approvals: ApprovalsModel;
   status: string;
+  formType: string,
 }
 
 const ApprovalSchema = new Schema (
@@ -62,7 +63,8 @@ const EmployeeRequisitionFormSchema = new Schema<IEmployeeReqForm>(
     updatedAt: { type: Date, required: false },
     applicants: { type: [String], required: false },
     approvals: { type: ApprovalsSchema, required: false },
-    status: {type: String, required:false, default:'Incomplete'}
+    status: {type: String, required:false, default:'Incomplete'},
+    formType: {type: String, require:false, default: 'ERF'}
   },
   { timestamps: true, strict: "throw" }
 );

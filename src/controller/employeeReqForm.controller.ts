@@ -101,7 +101,7 @@ export default class EmployeeReqForm {
     try {
       const skip = (page - 1) * limit;
       const data = await employeeService.getEmployeeReqForm(skip, limit);
-      return { data, page, limit, status: true };
+      return { data, page, limit, state: true };
     } catch (error: any) {
       return res.status(500).json({
         message: "There was an error getting the ER forms",
@@ -120,7 +120,7 @@ export default class EmployeeReqForm {
   ) {
     try {
       const data = await employeeService.getEmployeeReqFormById(formId);
-      return { data, status: true, total: data.length };
+      return { data, state: true, total: data.length };
     } catch (error: any) {
       return res.status(500).json({
         message: "There was an error getting the ER forms",

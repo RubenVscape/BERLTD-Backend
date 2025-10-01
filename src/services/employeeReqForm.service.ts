@@ -97,6 +97,14 @@ export class EmployeeReqFormService {
         },
       },
       {
+        $lookup: {
+          from: "locations",
+          localField: "jobLocation",
+          foreignField: "locationId",
+          as: "locationInfo",
+        },
+      },
+      {
         $addFields: {
           _id: 0,
           createdBy: {
@@ -106,6 +114,20 @@ export class EmployeeReqFormService {
               "Unknown user",
             ],
           },
+          reportTo: {
+            $cond:[
+              { $gt: [{ $size: '$userInfoReportTo'}, 0]},
+              { userId: { $arrayElemAt: ["$userInfoReportTo.userId", 0]}, fullname: { $arrayElemAt: ["$userInfoReportTo.fullname", 0]} },
+              { userId: "reportTo", fullname: 'user erased'}
+            ]
+          },
+          jobLocation: {
+            $cond:[
+              { $gt: [{ $size: '$locationInfo'}, 0]},
+              { locationId: { $arrayElemAt: ["$locationInfo.locationId", 0]}, locationName: { $arrayElemAt: ["$locationInfo.locationName", 0]} },
+              { locationId: "jobLocation", locationName: 'locationErased'}
+            ]
+          }
         },
       },
       {
@@ -116,6 +138,7 @@ export class EmployeeReqFormService {
           applicants: {
             _id: 0,
           },
+          locationInfo:0
         },
       },
     ]);
