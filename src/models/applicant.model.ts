@@ -14,8 +14,8 @@ export interface IApplicantInterface extends Document {
     craft: string;
     classification: string;
     shiftSchedule: object;
-    shiftStart: Date;
-    shiftEnds: Date;
+    shiftStart: string;
+    shiftEnds: string;
     payRate: string | number;
     reportDate: Date;
     ownVehicle: boolean;
@@ -176,7 +176,7 @@ export interface IApplicantInterface extends Document {
 
 const ApplicantSchema = new Schema<IApplicantInterface> (
       {
-        divisionResponsible: { type:String, required:true},
+        divisionResponsible: { type:String, required:false},
         formId: {type:String, required:true},
         updatedBy: {type: String, require:false},
         updatedAt: {type: Date, require:false},
@@ -188,8 +188,8 @@ const ApplicantSchema = new Schema<IApplicantInterface> (
         classification: { type: String, required: true },
         shiftSchedule:{
           data: {type: String, require: true},
-          shiftStart: { type: Date, require:true },
-          shiftEnds: { type: Date, require:true },
+          shiftStart: { type: String, require:true },
+          shiftEnds: { type: String, require:true },
         },
         payRate: { type: Schema.Types.Mixed,  require:true},
         reportDate: { type: Date, require:true  },
